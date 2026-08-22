@@ -1,0 +1,25 @@
+module: example.Example
+name: Example
+version: 0.1.0
+author: yourname
+repo: https://github.com/yourname/piclock3-example
+api-version: 1
+
+category: examples
+offers: []
+requires: none
+
+text: Hello
+refresh: 60
+
+settings:
+  text:
+    type: string
+    default: Hello
+    help: text to display, may contain {expansions}
+  refresh:
+    type: int
+    default: 60
+    min: 5
+    max: 3600
+    help: seconds between updates
