@@ -1,0 +1,27 @@
+# The shape of what config.yaml holds.  Required: without it the clock
+# refuses to load the plugin, and --check says which one is missing.
+#
+# `description:` is the only part that is required.  Everything under
+# settings: buys a spelling check and a value check for whoever writes a
+# config, which is the reason to write it.
+
+description: >
+  A line of text in a region, redrawn on a timer.  The template plugin -
+  replace this with what yours does.
+
+settings:
+
+  text:      {is: string}
+  refresh:   {is: number, unit: seconds, range: [1, 86400]}
+  font-size: {is: font-size}
+
+# A provider says what it answers here instead of drawing anything, and
+# its class inherits the role that answers it:
+#
+#   provides: [conditions, hourly, daily]   Weather
+#   provides: [map]                         BaseMap
+#   provides: [frames]                      Frames
+#   provides: [text]                        TextSource
+#
+# Saying it is what makes an entry a provider rather than a widget, and
+# --check tells anyone who writes it in the wrong section.

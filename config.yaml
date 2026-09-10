@@ -1,25 +1,22 @@
-module: example.Example
-name: Example
-version: 0.1.0
-author: yourname
-repo: https://github.com/yourname/piclock3-example
-api-version: 1
+# The defaults for this plugin, and the whole list of what a config or a
+# theme may set on it.  A name that is not here is not a setting: the
+# clock merges the user's over these, and --check says so when one is
+# misspelled.
+#
+# schema.yaml beside this says what each may hold.
 
-category: examples
-offers: []
-requires: none
+# which kind this is.  A theme reaches every instance of a kind at once -
+# `kind-settings: example:` - so pick a word for what the thing is rather
+# than for what you called it.
+kind: example
 
-text: Hello
+# what to draw.  It goes through expand(), so anything the clock knows can
+# be written into it: {location.latitude}, {plugin-data.whatever}.
+text: 'Hello from {location.latitude}, {location.longitude}'
+
+# seconds between redraws
 refresh: 60
 
-settings:
-  text:
-    type: string
-    default: Hello
-    help: text to display, may contain {expansions}
-  refresh:
-    type: int
-    default: 60
-    min: 5
-    max: 3600
-    help: seconds between updates
+# a fraction of the height of the region it sits in.  A value with units,
+# 20px, is used as written.
+font-size: 0.3

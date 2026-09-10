@@ -1,0 +1,72 @@
+# A whole clock with this plugin in it, run by naming it from the top of
+# a PiClock3 checkout:
+#
+#   python3 PyQtPiClock3.py plugins/example/examples/example.yaml
+#
+# A repository may carry one of these, and it is the quickest way for
+# somebody to see what yours does without editing a config of their own.
+
+pages:
+  clock-page: {order: 0, layout: classic, theme: circuit}
+
+language: en
+
+location:
+  latitude: 45
+  longitude: -93
+  timezone:
+
+# none of these needs a key, so this runs on a fresh clone with no
+# ApiKeys.yaml at all
+providers:
+  openmeteo:   {plugin: PiClock3.OpenMeteo}
+  metar:       {plugin: PiClock3.Metar, METAR: KMSP}
+  openfreemap: {plugin: PiClock3.OpenFreeMap}
+  librewxr:    {plugin: PiClock3.LibreWXR}
+
+widgets:
+  clock: {plugin: PiClock3.AnalogClock, region: clock}
+  date:  {plugin: PiClock3.Date, region: date}
+
+  forecast:
+    plugin: PiClock3.Forecast
+    region: forecast
+    forecast-provider: openmeteo
+
+  current-conditions:
+    plugin: PiClock3.CurrentConditions
+    region: current
+    conditions-provider: metar
+
+  # the classic layout repeats its maps region twice
+  radar1:
+    plugin: PiClock3.MapLoop
+    region: maps.1
+    base-provider: openfreemap
+    frame-provider: librewxr
+    style: terrain
+    zoom: 7
+    center:
+      latitude: '{location.latitude}'
+      longitude: '{location.longitude}'
+
+  radar2:
+    plugin: PiClock3.MapLoop
+    region: maps.2
+    base-provider: openfreemap
+    frame-provider: librewxr
+    style: terrain
+    zoom: 11
+    center:
+      latitude: '{location.latitude}'
+      longitude: '{location.longitude}'
+
+  # the plugin itself.  `plugin:` names the folder it was cloned into,
+  # not the file inside it.
+  hello:
+    plugin: plugins.example
+    region: bottom
+    text: 'Hello from {location.latitude}, {location.longitude}'
+    refresh: 30
+
+logging-level: info

@@ -1,84 +1,140 @@
 # PiClock3 Plugin Template
 
 A starting point for a PiClock3 plugin.  Press **Use this template** to make
-your own repo from it.
+your own repository from it.
 
-A plugin is a folder that PiClock3 loads at startup.  It gets a rectangle on
-the screen and draws whatever it likes in it — weather from a source nobody
-has added yet, a camera, tide times, the bus timetable.  There is no fixed
-list of what a plugin may be.
+It runs as it stands: a widget that draws a line of text in a region and
+redraws it on a timer.  Replace it with what yours does.
+
+A plugin is either a **widget**, which draws in a region a layout named, or a
+**provider**, which fetches something and draws nothing.  Which one it is
+follows from what its schema says, not from the code.
+
+## Try it first
+
+From the top of a PiClock3 checkout:
+
+```
+git clone https://github.com/yourname/piclock3-example plugins/example
+python3 PyQtPiClock3.py plugins/example/examples/example.yaml
+```
+
+That config is carried in this repository, which is the quickest way to let
+somebody see what a plugin does without editing a config of their own.
 
 ## Naming
 
-Pick a short lowercase name and use it in three places.  Here it is `example`:
+Pick a short lowercase name and use it in two places.  Here it is `example`:
 
-* the folder users clone into — `plugins/example`
-* the package name in `config.yaml` — `module: example.Example`
-* the class in `Example.py` — `class Example(Plugin)`
+* the folder users clone into - `plugins/example`
+* what a config writes - `plugin: plugins.example`
 
-The folder name has to match `module:`, because that is how Python finds it.
-Say so in your README, or people will clone it under the repo name and wonder
-why nothing loads.
+`plugin:` names the **folder**, not the file inside it.  The class can be
+called anything: the loader imports the folder and finds your `Plugin`
+subclass by inspection.  That is what `__init__.py` is for, and its one line
+is the only glue a plugin needs:
 
-## Installing it (yours or anyone's)
-
-```
-cd plugins
-git clone https://github.com/yourname/piclock3-example example
+```python
+from .Example import *  # noqa: F401,F403
 ```
 
-Then add it to `Config.yaml`:
+The `noqa` is deliberate, and WRITING-A-PLUGIN.md says why at length.
+
+## What is in here
+
+    __init__.py             puts the class where the loader looks
+    Example.py              the module, holding your Widget or Provider
+    config.yaml             its defaults, and the whole list of its settings
+    schema.yaml             the shape of those settings.  Required
+    examples/example.yaml   a clock with it in, run by naming it
+    images/                 art of your own, if you draw any
+    README.md               what it does, and any key it needs
+
+A repository may also carry `languages/`, `units/`, `layouts/` and `themes/`
+of its own, all found where they sit.  A widget that draws something new
+often needs somewhere to draw it, and no shipped layout has a region for a
+thing that did not exist yet - so a `layouts/` folder here is searched.  One
+rule: **a layout you bring can add a name, never replace one.**
+
+## Naming it in a config
 
 ```yaml
-plugins:
-  example:
-    module: example.Example
-    block: bottom
-    text: Hello
+widgets:
+  hello:
+    plugin: plugins.example
+    region: bottom
+    text: 'Hello from {location.latitude}'
 ```
 
-`block:` is the region it draws in, and comes from the active layout.
+A provider goes under `providers:` instead and takes no region.  Putting one
+in the wrong section is a `--check` problem that says which way to move it.
 
 ## What you get
 
-Your class inherits `Plugin` and may use:
+A widget's class inherits `Widget`.  A provider inherits the role for what
+it answers - `Weather`, `BaseMap`, `Frames` or `TextSource` - and implements
+that role's calls instead of drawing.  A widget may use:
 
 | | |
 |---|---|
-| `self.block` | your QWidget, if the config gave you a `block:` |
-| `self.config` | your `config.yaml`, with the user's overrides merged over it |
+| `self.region` | the QWidget you draw in.  `self.regions` when a layout repeats it |
+| `self.config` | your `config.yaml`, with the user's settings merged over it |
 | `self.piclock` | the running clock |
-| `self.piclock.expand(s)` | expands `{location.lattitude}`, `{apikeys.xxx}`, `{plugin-folder}` |
-| `self.piclock.plugins[name]` | another plugin, if you need to ask it something |
+| `self.expand(s)` | fills in `{location.latitude}`, `{apikeys.yours}`, `{this-folder}` |
+| `self.scaleFont(props, height)` | a `font-size:` fraction as pixels |
+| `self.applyEffect(widget, height)` | the glow or shadow a theme asked for |
+| `self.icon(name)` | an image from the icon set a theme picked |
+| `self.units(quantity, from, value)` | a value in the set the config chose |
 
-and three methods worth overriding:
+and two methods worth overriding:
 
 | | |
 |---|---|
-| `__init__` | set attributes, do not touch the screen |
-| `start()` | build your widgets, start your timers |
-| `pageChange()` | the visible page changed — refresh if you are now showing |
+| `start()` | build your widgets, start your timers.  The region has a size by now |
+| `pageChange()` | the visible page changed - catch up if it is now yours |
 
-## Two things that will bite you
+`__init__` runs before any of that: set attributes there and touch nothing on
+the screen.
+
+## Three things that will bite you
 
 **Keep a reference to your QTimer.**  `self.timer = QTimer()`, never
-`timer = QTimer()`.  A local one is garbage collected the moment `start()`
-returns and never fires again, and nothing tells you.
+`timer = QTimer()`.  A local one is collected the moment `start()` returns,
+never fires again, and says nothing about it.
 
-**Check `self.block.isVisible()` before doing work.**  Pages that are not
-showing should not be fetching.
+**Check `self.region.isVisible()` before doing work.**  A page nobody is
+looking at should not be fetching.
 
-## Fitting the block
-
-You are given a rectangle and you decide how to fill it — fit, stretch, crop,
-wrap, whatever suits what you are drawing.  A clock face keeps its circle.  A
-map fills and crops, because letterboxing a map looks broken.  If the choice
-matters to the user, put it in `settings:` so the editor can offer it.
+**Read your own config, never the theme's.**  A theme's `color:` and fonts
+arrive on your region and Qt inherits them into whatever you draw, so
+setting only `font-size` is usually all a widget has to do.
 
 ## Before you publish
 
-- [ ] **Run it on a real clock for a day.**  Overnight is where the bugs are.
-- [ ] Fill in `name`, `version`, `author` and `repo` in `config.yaml`
-- [ ] Describe every user-facing option under `settings:`
+- [ ] **Run it on a real clock for a day.**  Overnight is where the bugs are
+- [ ] `python3 PyQtPiClock3.py plugins/example/examples/example.yaml --check`
+- [ ] Every setting in `config.yaml` declared in `schema.yaml`
+- [ ] A key belongs in the user's `ApiKeys.yaml`, never in your `config.yaml`
+- [ ] Say in this README which service it talks to, and whether it needs an
+      account
 - [ ] Put your own name in `LICENSE`, or replace it
-- [ ] Add the topic **`piclock3-plugin`** to your repo so people can find it
+- [ ] Add the topic **`piclock3-plugin`** to your repository so people can
+      find it
+
+## The long form
+
+**WRITING-A-PLUGIN.md** is the whole of it, and **WRITING-A-SCHEMA.md**
+covers what a `schema.yaml` may say.  Two links to each, because they answer
+different questions:
+
+* in the checkout this is cloned into -
+  [WRITING-A-PLUGIN.md](../../docs/WRITING-A-PLUGIN.md),
+  [WRITING-A-SCHEMA.md](../../docs/WRITING-A-SCHEMA.md).  These describe the
+  core you are actually running.
+* on the web -
+  [WRITING-A-PLUGIN.md](https://github.com/n0bel/PiClock3/blob/main/docs/WRITING-A-PLUGIN.md),
+  [WRITING-A-SCHEMA.md](https://github.com/n0bel/PiClock3/blob/main/docs/WRITING-A-SCHEMA.md).
+  These are current, which is not the same thing.
+
+Read the first pair while you are writing, and the second before you
+publish.
