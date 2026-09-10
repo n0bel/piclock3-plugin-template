@@ -39,8 +39,7 @@ class Example(Widget):
         # there, so a theme that says color: once already reaches this.
         props = self.scaleFont({'font-size': self.config['font-size']},
                                rect.height())
-        self.label.setStyleSheet(
-            '#example {%s }' % self.piclock._buildStyleString(props))
+        self.label.setStyleSheet(self.styleRule('example', props))
         self.applyEffect(self.label, rect.height())
 
         # Keep the timer on self.  A local one is collected the moment
