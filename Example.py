@@ -22,8 +22,8 @@ class Example(Widget):
 
     def __init__(self, piclock, name, config):
         super().__init__(piclock, name, config)
-        # nothing on the screen yet.  A region has no size worth reading
-        # until the layout has placed it, which start() is after.
+        # nothing on the screen yet: a region has no size until the layout
+        # has placed it, and start() is where it has one.
         self.label = None
         self.timer = None
 
@@ -35,8 +35,8 @@ class Example(Widget):
         self.label.setAlignment(Qt.AlignCenter)
 
         # only the size.  color, font-family, font-style and font-weight
-        # arrive on the region and Qt inherits them, so a theme that says
-        # color: once reaches this without either of us writing a line.
+        # arrive on the region and Qt inherits them into whatever is drawn
+        # there, so a theme that says color: once already reaches this.
         props = self.scaleFont({'font-size': self.config['font-size']},
                                rect.height())
         self.label.setStyleSheet(
