@@ -70,3 +70,20 @@ widgets:
     refresh: 30
 
 logging-level: info
+
+# The provider half of this template draws nothing itself: it supplies
+# words, and the shipped Text widget draws them.  Keep ExampleSource.py
+# instead of Example.py (see __init__.py), then replace the widget above
+# with these two entries:
+#
+# providers:
+#   words:
+#     plugin: plugins.Example
+#     lines: ['One thing it says', 'and another']
+#     refresh: 30
+#
+# widgets:
+#   said:
+#     plugin: PiClock3.Text
+#     region: bottom
+#     text-provider: words

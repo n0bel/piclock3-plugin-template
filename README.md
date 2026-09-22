@@ -45,18 +45,45 @@ The `noqa` is deliberate, and WRITING-A-PLUGIN.md says why at length.
 ## What is in here
 
     __init__.py             puts the class where the loader looks
-    Example.py              the module, holding your Widget or Provider
+    Example.py              a widget: draws in a region
+    ExampleSource.py        a provider: supplies words, draws nothing
     config.yaml             its defaults, and the whole list of its settings
     schema.yaml             the shape of those settings.  Required
     examples/example.yaml   a clock with it in, run by naming it
     images/                 art of your own, if you draw any
     README.md               what it does, and any key it needs
 
+**Keep one of the two modules.**  A plugin folder holds one class - the
+loader imports the folder and takes the `Plugin` subclass it finds, so two
+would be a coin toss.  `__init__.py` says which one, and the file you are
+not writing is the file to delete.
+
 A repository may also carry `languages/`, `units/`, `layouts/` and `themes/`
 of its own, all found where they sit.  A widget that draws something new
 often needs somewhere to draw it, and no shipped layout has a region for a
 thing that did not exist yet - so a `layouts/` folder here is searched.  One
 rule: **a layout you bring can add a name, never replace one.**
+
+## Widget or provider
+
+A **widget** draws in a region a layout named.  `Example.py` is one: it
+reads its settings, draws a line of text, and redraws it on a timer.
+
+A **provider** supplies something and draws nothing.  `ExampleSource.py` is
+one: it is a `TextSource`, so it answers `text()` and calls back whoever
+subscribed when the words change.  The shipped `Text` widget draws them, so
+a provider needs no widget of its own to be useful.
+
+Which one a plugin is follows from three things, and all three have to
+agree:
+
+| | widget | provider |
+|---|---|---|
+| the class inherits | `Widget` | `Weather`, `BaseMap`, `Frames` or `TextSource` |
+| `schema.yaml` says | nothing about `provides:` | `provides: [text]`, or what its role answers |
+| a config writes it under | `widgets:`, with a `region:` | `providers:`, with no region |
+
+`--check` says so when they disagree, and which way to move it.
 
 ## Naming it in a config
 

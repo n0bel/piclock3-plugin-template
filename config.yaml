@@ -20,3 +20,13 @@ refresh: 60
 # a fraction of the height of the region it sits in.  A value with units,
 # 20px, is used as written.
 font-size: 0.3
+
+# ---------------------------------------------------------------------
+# The provider half of this template, for ExampleSource.py.  A provider
+# has no region and no font: what it has is what it supplies.
+#
+# kind: text-source
+#
+# lines:
+#   - 'The first thing it says'
+#   - 'and the second, at {location.latitude}'

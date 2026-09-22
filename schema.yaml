@@ -25,3 +25,11 @@ settings:
 #
 # Saying it is what makes an entry a provider rather than a widget, and
 # --check tells anyone who writes it in the wrong section.
+
+# For the provider half, ExampleSource.py:
+#
+# provides: [text]
+#
+# settings:
+#   lines:   {is: list}
+#   refresh: {is: number, unit: seconds, range: [1, 86400]}
