@@ -15,8 +15,8 @@ follows from what its schema says, not from the code.
 From the top of a PiClock3 checkout:
 
 ```
-git clone https://github.com/yourname/piclock3-example plugins/example
-python3 PyQtPiClock3.py plugins/example/examples/example.yaml
+git clone https://github.com/yourname/piclock3-example plugins/Example
+python3 PyQtPiClock3.py plugins/Example/examples/example.yaml
 ```
 
 That config is carried in this repository, which is the quickest way to let
@@ -24,10 +24,12 @@ somebody see what a plugin does without editing a config of their own.
 
 ## Naming
 
-Pick a short lowercase name and use it in two places.  Here it is `example`:
+Pick a short name in PascalCase, the way the shipped plugins are named -
+`AnalogClock`, `MapLoop`, `Metar`.  Use it in two places.  Here it is
+`Example`:
 
-* the folder users clone into - `plugins/example`
-* what a config writes - `plugin: plugins.example`
+* the folder users clone into - `plugins/Example`
+* what a config writes - `plugin: plugins.Example`
 
 `plugin:` names the **folder**, not the file inside it.  The class can be
 called anything: the loader imports the folder and finds your `Plugin`
@@ -61,7 +63,7 @@ rule: **a layout you bring can add a name, never replace one.**
 ```yaml
 widgets:
   hello:
-    plugin: plugins.example
+    plugin: plugins.Example
     region: bottom
     text: 'Hello from {location.latitude}'
 ```
@@ -112,7 +114,7 @@ setting only `font-size` is usually all a widget has to do.
 ## Before you publish
 
 - [ ] **Run it on a real clock for a day.**  Overnight is where the bugs are
-- [ ] `python3 PyQtPiClock3.py plugins/example/examples/example.yaml --check`
+- [ ] `python3 PyQtPiClock3.py plugins/Example/examples/example.yaml --check`
 - [ ] Every setting in `config.yaml` declared in `schema.yaml`
 - [ ] A key belongs in the user's `ApiKeys.yaml`, never in your `config.yaml`
 - [ ] Say in this README which service it talks to, and whether it needs an

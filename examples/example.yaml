@@ -1,7 +1,7 @@
 # A whole clock with this plugin in it, run by naming it from the top of
 # a PiClock3 checkout:
 #
-#   python3 PyQtPiClock3.py plugins/example/examples/example.yaml
+#   python3 PyQtPiClock3.py plugins/Example/examples/example.yaml
 #
 # A repository may carry one of these, and it is the quickest way for
 # somebody to see what yours does without editing a config of their own.
@@ -64,7 +64,7 @@ widgets:
   # the plugin itself.  `plugin:` names the folder it was cloned into,
   # not the file inside it.
   hello:
-    plugin: plugins.example
+    plugin: plugins.Example
     region: bottom
     text: 'Hello from {location.latitude}, {location.longitude}'
     refresh: 30
