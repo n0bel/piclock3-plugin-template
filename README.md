@@ -48,7 +48,7 @@ The `noqa` is deliberate, and WRITING-A-PLUGIN.md says why at length.
     Example.py              a widget: draws in a region
     ExampleSource.py        a provider: supplies words, draws nothing
     config.yaml             its defaults, and the whole list of its settings
-    schema.yaml             the shape of those settings.  Required
+    schema.yaml             each setting's shape and help.  Required
     examples/example.yaml   a clock with it in, run by naming it
     images/                 art of your own, if you draw any
     README.md               what it does, and any key it needs
@@ -142,7 +142,8 @@ setting only `font-size` is usually all a widget has to do.
 
 - [ ] **Run it on a real clock for a day.**  Overnight is where the bugs are
 - [ ] `python3 PyQtPiClock3.py plugins/Example/examples/example.yaml --check`
-- [ ] Every setting in `config.yaml` declared in `schema.yaml`
+- [ ] Every setting in `config.yaml` declared in `schema.yaml`, with a
+      `help:` saying what it is
 - [ ] A key belongs in the user's `ApiKeys.yaml`, never in your `config.yaml`
 - [ ] Say in this README which service it talks to, and whether it needs an
       account

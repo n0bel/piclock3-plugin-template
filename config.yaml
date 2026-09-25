@@ -3,22 +3,18 @@
 # clock merges the user's over these, and --check says so when one is
 # misspelled.
 #
-# schema.yaml beside this says what each may hold.
+# What each setting is goes in its help: in schema.yaml.  A comment here
+# says only why a default is that value, where somebody might ask.
 
 # which kind this is.  A theme reaches every instance of a kind at once -
 # `kind-settings: example:` - so pick a word for what the thing is rather
 # than for what you called it.
 kind: example
 
-# what to draw.  It goes through expand(), so anything the clock knows can
-# be written into it: {location.latitude}, {plugin-data.whatever}.
 text: 'Hello from {location.latitude}, {location.longitude}'
 
-# seconds between redraws
 refresh: 60
 
-# a fraction of the height of the region it sits in.  A value with units,
-# 20px, is used as written.
 font-size: 0.3
 
 # ---------------------------------------------------------------------

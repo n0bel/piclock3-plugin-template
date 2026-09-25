@@ -1,9 +1,12 @@
-# The shape of what config.yaml holds.  Required: without it the clock
-# refuses to load the plugin, and --check says which one is missing.
+# The shape of what config.yaml holds, and what each setting is.
+# Required: without it the clock refuses to load the plugin, and --check
+# says which one is missing.
 #
-# `description:` is the only part that is required.  Everything under
-# settings: buys a spelling check and a value check for whoever writes a
-# config, which is the reason to write it.
+# `description:` is required, and so is a `help:` on every setting - whole
+# sentences saying what it is, which an editor shows beside it and --check
+# shows after a wrong value.  The rest under settings: buys a spelling
+# check and a value check for whoever writes a config, which is the reason
+# to write it.
 
 description: >
   A line of text in a region, redrawn on a timer.  The template plugin -
@@ -11,9 +14,19 @@ description: >
 
 settings:
 
-  text:      {is: string}
-  refresh:   {is: number, unit: seconds, range: [1, 86400]}
-  font-size: {is: font-size}
+  text:
+    is: string
+    help: The words drawn.  A name in braces is filled in, such as
+      {location.latitude}.
+  refresh:
+    is: number
+    unit: seconds
+    range: [1, 86400]
+    help: How often the text is drawn again.
+  font-size:
+    is: font-size
+    help: How tall the words are, as a fraction of the region's height or
+      as a measure such as 20px.
 
 # A provider says what it answers here instead of drawing anything, and
 # its class inherits the role that answers it:
@@ -31,5 +44,11 @@ settings:
 # provides: [text]
 #
 # settings:
-#   lines:   {is: list}
-#   refresh: {is: number, unit: seconds, range: [1, 86400]}
+#   lines:
+#     is: list
+#     help: The lines it supplies, one at a time, in turn.
+#   refresh:
+#     is: number
+#     unit: seconds
+#     range: [1, 86400]
+#     help: How often it moves on to the next line.
