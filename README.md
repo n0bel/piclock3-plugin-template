@@ -33,14 +33,17 @@ Pick a short name in PascalCase, the way the shipped plugins are named -
 
 `plugin:` names the **folder**, not the file inside it.  The class can be
 called anything: the loader imports the folder and finds your `Plugin`
-subclass by inspection.  That is what `__init__.py` is for, and its one line
-is the only glue a plugin needs:
+subclass by inspection.  That is what `__init__.py` is for, and its import
+line is the only glue a plugin needs:
 
 ```python
-from .Example import *  # noqa: F401,F403
+from .Example import *  # noqa: E402,F401,F403
 ```
 
-The `noqa` is deliberate, and WRITING-A-PLUGIN.md says why at length.
+Above it, `__init__.py` checks that PiClock3 is new enough, and stops with
+a sentence saying which version is needed when it is not.  Change the date
+to the oldest PiClock3 yours runs on.  The `noqa` is deliberate, and
+WRITING-A-PLUGIN.md says why at length.
 
 ## What is in here
 
